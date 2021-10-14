@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .nav {
+            display: flex;
+            padding: 10px 10px;
+            position: fixed;
+            width: 100vw;
+            background-color: white;
+        }
+
+        .nav>div {
+            flex-basis: 480px;
+
+        }
+
+        #logo {
+            width: 150px;
+            height: 60px;
+        }
+
+        #ham {
+            width: 40px;
+            height: 40px;
+            padding: 0 10px;
+            vertical-align: top;
+        }
+
+        input {
+            padding: 15px;
+            width: 380px;
+        }
+
+        #searchIcon {
+            width: 50px;
+            height: 47px;
+            padding: 0;
+            border: 1px solid gray;
+        }
+
+        button {
+            background-color: transparent;
+            padding: 0;
+            border: transparent;
+
+        }
+
+        .searchdiv {
+            display: flex;
+
+        }
+
+        .notidiv {
+            display: flex;
+            margin-left: 100px;
+        }
+
+        .notidiv>div {
+            float: right;
+            margin-left: 10px;
+        }
+
+        .col-3 {
+            width: 55px;
+            height: 47px;
+            margin-left: 10px;
+        }
+
+        .ch {
+            border-radius: 50%;
+        }
+
+        #showvideo {
+            width: 1200px;
+            margin: 10px auto;
+            margin-top: 100px;
+            margin-left: 125px;
+            background-color: rgb(243, 243, 243);
+
+        }
+        #showvideo2 {
+            width: 1200px;
+            margin: 10px auto;
+            margin-top: 100px;
+            margin-left: 125px;
+            background-color: rgb(243, 243, 243);
+
+        }
+
+        #videos {
+            display: grid;
+            grid-template-columns: 48% 52%;
+            
+        }
+
+        .sidebar {
+            margin-top: 70px;
+            height: 100vh;
+            background-color: white;
+            width: 120px;
+            position: fixed;
+            text-align: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 5% 85%;
+            grid-gap: 1%;
+        }
+        .sideicons{
+            width: 50px;
+            padding: 20px;
+            padding-bottom: 5px;
+        }
+        .sideicons:hover{
+            background-color: rgb(172, 172, 172);
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- nav bar start -->
+    <div class="nav">
+        <div>
+            <img src="ham.png" id="ham">
+            <img src="https://logos-world.net/wp-content/uploads/2020/04/YouTube-Logo.png" id="logo">
+        </div>
+        <div class="searchdiv">
+            <div>
+                <input type="text" id="query" placeholder="Search for a Video" />
+            </div>
+            <div>
+                <button onclick="searchVideos()"><img
+                        src="https://i.pinimg.com/736x/80/37/08/803708a2135c22ec40826c306b00e933.jpg"
+                        id="searchIcon"></button>
+            </div>
+        </div>
+        <div class="notidiv">
+            <div><img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLtgftLHQuwp0CIxSvwqcRFgq3kjfuTA_APg&usqp=CAU"
+                    class="col-3"></div>
+            <div><img src="https://icon-library.com/images/grid-icon/grid-icon-17.jpg" class="col-3"></div>
+            <div><img src="bell-icon.png" class="col-3"></div>
+            <div><img src="channel.jpg" class="col-3 ch"></div>
+        </div>
+
+    </div>
+
+    <!-- nav bar end -->
+    <div class="container">
+        <div class="sidebar">
+            <div>
+                <img src="home.png" alt="" class="sideicons" id="home" onclick="mostPopular()">
+            <span>Home</span>
+            </div>
+            <div>
+                <img src="https://icons-for-free.com/iconfiles/png/128/explore+24px-131985191584234929.png" alt="" class="sideicons">
+                <span>Explore</span>
+            </div>
+            <div>
+                <img src="https://static.thenounproject.com/png/3862272-200.png" alt="" class="sideicons">
+                <span>Subscriptions</span>
+            </div>
+            <div>
+                <img src="https://static.thenounproject.com/png/2481186-200.png" alt="" class="sideicons">
+                <span>Library</span>
+            </div>
+
+        </div>
+
+        
+    </div>
+    <div id="showvideo">
+        <div id="videos"></div>
+    </div>
+    <div id="showvideo2">
+        <div id="videos2"></div>
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>
+
+<script>
+    let videos = document.getElementById("videos");
+    let showvideo=document.getElementById("showvideo");
+
+
+    //https://youtube.googleapis.com/youtube/v3/search?q=csk&type=video&key=[YOUR_API_KEY]
+
+    async function searchVideos() {
+        let q = document.getElementById("query").value;
+        let res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=${q}&part=snippet&type=video&maxResults=20&key=AIzaSyCb7wcqQ_6o0zEvxmMQeb9dMqYxx_9Ah6g`);
+
+        let data = await res.json();
+
+        console.log(data);
+
+        appendVideos(data.items);
+    }
+
+
+    function appendVideos(video_data) {
+        showvideo.style.display="block";
+        showvideo2.style.display="none";
+        videos.innerHTML = null;
+        video_data.forEach(({ id: { videoId }, snippet: { channelTitle, description, publishedAt, title } }) => {
+
+            let div = document.createElement("div");
+
+            div.style.paddingTop = "10px"
+
+            let text_div = document.createElement("div");
+            text_div.style.paddingRight = "10px"
+
+            let title_p = document.createElement("p");
+            title_p.innerText = title;
+            title_p.style.fontSize = "25px"
+            title_p.style.width = "500px";
+
+            let channelTitle_p = document.createElement("p");
+            channelTitle_p.innerText = channelTitle;
+
+            let description_p = document.createElement("p");
+            description_p.innerText = description;
+
+            let publishedAt_p = document.createElement("p");
+            publishedAt_p.innerText = publishedAt;
+
+            text_div.append(title_p, channelTitle_p, description_p, publishedAt_p);
+
+
+            console.log(description);
+            console.log(title, channelTitle, publishedAt);
+
+            div.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
+            videos.append(div, text_div);
+        });
+    }
+    let videos2 = document.getElementById("videos2");
+    let showvideo2 = document.getElementById("showvideo2");
+
+    async function mostPopular(){
+
+        let q = document.getElementById("query").value;
+        let res = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=12&regionCode=IN&key=AIzaSyCb7wcqQ_6o0zEvxmMQeb9dMqYxx_9Ah6g`);
+
+        let data = await res.json();
+
+        console.log(data);
+
+        appendPopular(data.items);
+
+        
+    }
+   
+
+    function appendPopular(video_data){
+
+        showvideo.style.display="none";
+        showvideo2.style.display="block";
+
+        videos2.innerHTML = null;
+   
+        showvideo2.style.width="1300px";
+
+        videos2.style.display="grid";
+        videos2.style.gridTemplateColumns = "30% 30% 30%";
+        videos2.style.gridGap = "1%";
+        video_data.forEach(({ id, snippet: { channelTitle, description, publishedAt, title } }) => {
+            console.log(id)
+            let div = document.createElement("div");
+
+            div.style.paddingTop = "10px"
+
+            let text_div = document.createElement("div");
+            
+            text_div.style.width = "100px"
+
+            let title_p = document.createElement("p");
+            title_p.innerText = title;
+            title_p.style.fontSize = "25px"
+            title_p.style.width = "300px";
+
+            let channelTitle_p = document.createElement("p");
+            channelTitle_p.innerText = channelTitle;
+
+
+
+            text_div.append(title_p, channelTitle_p);
+
+
+            div.innerHTML = `<iframe width="360" height="215" src="https://www.youtube.com/embed/${id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            div.append(text_div);
+
+          
+           
+            
+            videos2.append(div);
+        });
+
+    }
+</script>
