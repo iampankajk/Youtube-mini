@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        form {
+            padding: 10px;
+            color: white;
+        }
+
+        input {
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+
+        }
+
+        #container {
+            width: 400px;
+            margin: auto;
+            margin-top: 50px;
+            background-image: linear-gradient(to bottom, #141b29, #0c111b 300px);
+        }
+
+        #submit {
+            width: 150px;
+        }
+
+        #nav {
+
+            padding: 10px;
+            background-image: linear-gradient(to bottom, #141b29, #0c111b 300px);
+
+        }
+
+        #li {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 10px;
+            list-style: none;
+            padding: 5px;
+        }
+
+        button {
+            border: none;
+            padding: 10px;
+            font-weight: 700;
+            background-color: transparent;
+            color: white;
+        }
+
+        button:hover {
+            background-color: rgb(115, 182, 221);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="nav">
+        <ul id="li">
+            <li>
+                <a href="signup.html"><button>Sign Up</button></a>
+            </li>
+            <li>
+                <a href="signIn.html"><button>Login</button></a>
+            </li>
+            <li>
+                <a href="index.html"><button>Home</button></a>
+            </li>
+        </ul>
+
+    </div>
+    <div id="container">
+        <form action="home.html" id="myForm" onsubmit="signin(event)">
+            <h1>Sign In</h1>
+            <input type="text" id="user" placeholder="Username" /><br>
+            <input type="password" id="pass" placeholder="password"><br>
+            <input type="submit" class="submit" value="Log In">
+        </form>
+    </div>
+</body>
+
+</html>
+
+
+<script>
+
+    function signin(e) {
+
+
+        e.preventDefault();
+
+        let form = document.getElementById("myForm");
+
+        let user_data = {
+            username: form.user.value,
+            password: form.pass.value,
+        };
+
+        let data_to_send = JSON.stringify(user_data);
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+            method: 'POST',
+
+            body: data_to_send,
+
+            headers: {
+
+                "Content-Type": "application/json",
+            },
+        })
+
+            .then((res) => {
+                return res.json();
+
+            }).then((res) => {
+
+                fetchMyData(user_data.username, res.token);
+
+            }).catch((e) => {
+                console.log(e)
+            });
+
+    }
+
+    function fetchMyData(username, token) {
+
+        fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+
+            headers: {
+
+                "Content-Type": "application/json",
+
+                Authorization: `Bearer ${token}`,
+            },
+
+        })
+            .then((res) => {
+                return res.json();
+
+            }).then((res) => {
+                console.log(res);
+                setData(res);
+            }).catch((e) => {
+                console.log(e)
+            });
+
+
+    }
+
+
+    function setData(res){
+        let username = res.username;
+
+        localStorage.setItem("username",JSON.stringify([username]));
+        window.location.href = "index.html";
+
+    }
+
+</script>
