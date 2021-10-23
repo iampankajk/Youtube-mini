@@ -90,6 +90,7 @@
             background-color: rgb(243, 243, 243);
 
         }
+
         #showvideo2 {
             width: 1200px;
             margin: 10px auto;
@@ -102,7 +103,7 @@
         #videos {
             display: grid;
             grid-template-columns: 48% 52%;
-            
+
         }
 
         .sidebar {
@@ -119,14 +120,50 @@
             grid-template-columns: 5% 85%;
             grid-gap: 1%;
         }
-        .sideicons{
+
+        .sideicons {
             width: 50px;
             padding: 20px;
             padding-bottom: 5px;
         }
-        .sideicons:hover{
+
+        .sideicons:hover {
             background-color: rgb(172, 172, 172);
-            
+
+        }
+
+        #channel {
+            display: none;
+        }
+
+        form>input {
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+
+        }
+
+        #signinform {
+            width: 400px;
+            margin-top: 100px;
+            margin-left: 500px;
+            background-image: linear-gradient(to bottom, #141b29, #0c111b 300px);
+            z-index: 1;
+            position: fixed;
+            padding: 10px;
+            color: white;
+            display: none;
+        }
+        #signupform {
+            width: 400px;
+            margin-top: 100px;
+            margin-left: 500px;
+            background-image: linear-gradient(to bottom, #141b29, #0c111b 300px);
+            z-index: 1;
+            position: fixed;
+            padding: 10px;
+            color: white;
+            display: none;
         }
     </style>
 </head>
@@ -155,20 +192,26 @@
                     class="col-3"></div>
             <div><img src="https://icon-library.com/images/grid-icon/grid-icon-17.jpg" class="col-3"></div>
             <div><img src="bell-icon.png" class="col-3"></div>
-            <div><img src="channel.jpg" class="col-3 ch"></div>
+            <div id="channel"><img src="channel.jpg" class="col-3 ch"></div>
+            <div id="signuptext"><button class="col-3 ch" onclick="displaysignup()">Sign Up</button></div>
+            <div id="signintext"><button class="col-3 ch" onclick="displaysignin()">Sign In</button></div>
+
         </div>
 
     </div>
 
     <!-- nav bar end -->
+
+
     <div class="container">
         <div class="sidebar">
             <div>
                 <img src="home.png" alt="" class="sideicons" id="home" onclick="mostPopular()">
-            <span>Home</span>
+                <span>Home</span>
             </div>
             <div>
-                <img src="https://icons-for-free.com/iconfiles/png/128/explore+24px-131985191584234929.png" alt="" class="sideicons">
+                <img src="https://icons-for-free.com/iconfiles/png/128/explore+24px-131985191584234929.png" alt=""
+                    class="sideicons">
                 <span>Explore</span>
             </div>
             <div>
@@ -182,8 +225,33 @@
 
         </div>
 
-        
+
     </div>
+    <div id="signinform">
+        <form action="home.html" id="myFormsignin" onsubmit="signin(event)">
+            <h1>Sign In</h1>
+            <input type="text" id="user" placeholder="Username" /><br>
+            <input type="password" id="pass" placeholder="password"><br>
+            <input type="submit" class="submit" value="Log In">
+        </form>
+    </div>
+
+    <div id="signupform">
+
+        <form action="" id="myFormsignup" onsubmit="signup(event)">
+            <h1>Sign Up</h1>
+
+            <input type="text" id="name" placeholder="Name"><br>
+            <input type="email" id="email" placeholder="Email"><br>
+            <input type="password" id="password" placeholder="Password"><br>
+            <input type="text" id="username" placeholder="Username" />
+            <input type="number" id="mobile" placeholder="Mobile" />
+            <input type="text" id="description" placeholder="Description" />
+
+            <input type="submit" value="Sign Up" id="submit" />
+        </form>
+    </div>
+
     <div id="showvideo">
         <div id="videos"></div>
     </div>
@@ -202,7 +270,7 @@
 
 <script>
     let videos = document.getElementById("videos");
-    let showvideo=document.getElementById("showvideo");
+    let showvideo = document.getElementById("showvideo");
 
 
     //https://youtube.googleapis.com/youtube/v3/search?q=csk&type=video&key=[YOUR_API_KEY]
@@ -220,8 +288,8 @@
 
 
     function appendVideos(video_data) {
-        showvideo.style.display="block";
-        showvideo2.style.display="none";
+        showvideo.style.display = "block";
+        showvideo2.style.display = "none";
         videos.innerHTML = null;
         video_data.forEach(({ id: { videoId }, snippet: { channelTitle, description, publishedAt, title } }) => {
 
@@ -260,7 +328,7 @@
     let videos2 = document.getElementById("videos2");
     let showvideo2 = document.getElementById("showvideo2");
 
-    async function mostPopular(){
+    async function mostPopular() {
 
         let q = document.getElementById("query").value;
         let res = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=12&regionCode=IN&key=AIzaSyCb7wcqQ_6o0zEvxmMQeb9dMqYxx_9Ah6g`);
@@ -271,20 +339,20 @@
 
         appendPopular(data.items);
 
-        
+
     }
-   
 
-    function appendPopular(video_data){
 
-        showvideo.style.display="none";
-        showvideo2.style.display="block";
+    function appendPopular(video_data) {
+
+        showvideo.style.display = "none";
+        showvideo2.style.display = "block";
 
         videos2.innerHTML = null;
-   
-        showvideo2.style.width="1300px";
 
-        videos2.style.display="grid";
+        showvideo2.style.width = "1300px";
+
+        videos2.style.display = "grid";
         videos2.style.gridTemplateColumns = "30% 30% 30%";
         videos2.style.gridGap = "1%";
         video_data.forEach(({ id, snippet: { channelTitle, description, publishedAt, title } }) => {
@@ -294,7 +362,7 @@
             div.style.paddingTop = "10px"
 
             let text_div = document.createElement("div");
-            
+
             text_div.style.width = "100px"
 
             let title_p = document.createElement("p");
@@ -313,11 +381,153 @@
             div.innerHTML = `<iframe width="360" height="215" src="https://www.youtube.com/embed/${id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             div.append(text_div);
 
-          
-           
-            
+
+
+
             videos2.append(div);
         });
+
+    }
+    mostPopular();
+
+
+    function displaysignin() {
+        let form = document.getElementById("signinform");
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+    function displaysignup() {
+        let form = document.getElementById("signupform");
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+    
+    function signin(e) {
+
+
+        e.preventDefault();
+
+        let form = document.getElementById("myFormsignin");
+
+        let user_data = {
+            username: form.user.value,
+            password: form.pass.value,
+        };
+
+        let data_to_send = JSON.stringify(user_data);
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+            method: 'POST',
+
+            body: data_to_send,
+
+            headers: {
+
+                "Content-Type": "application/json",
+            },
+        })
+
+            .then((res) => {
+                return res.json();
+
+            }).then((res) => {
+
+                fetchMyData(user_data.username, res.token);
+
+            }).catch((e) => {
+                console.log(e)
+            });
+
+    }
+
+    function fetchMyData(username, token) {
+
+        fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+
+            headers: {
+
+                "Content-Type": "application/json",
+
+                Authorization: `Bearer ${token}`,
+            },
+
+        })
+            .then((res) => {
+                return res.json();
+
+            }).then((res) => {
+                console.log(res);
+                setData(res);
+            }).catch((e) => {
+                console.log(e)
+            });
+
+
+    }
+
+
+    function setData(res) {
+        let username = res.username;
+
+        let channel = document.getElementById("channel");
+        let form = document.getElementById("signinform");
+        let signintext = document.getElementById("signintext");
+        channel.style.display = "block";
+        // channel.innerText = username;
+        if(username!==undefined){
+            form.style.display="none";
+            signintext.style.display="none";
+        }
+
+
+    }
+
+
+    function signup(e) {
+        e.preventDefault();
+
+        let form = document.getElementById("myFormsignup");
+
+        let user_data = {
+            name: form.name.value,
+            email: form.email.value,
+            password: form.password.value,
+            username: form.username.value,
+            mobile: form.mobile.value,
+            description: form.description.value,
+
+        };
+
+        user_data = JSON.stringify(user_data);
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/register", {
+
+            method: 'POST',
+            body: user_data,
+
+            headers: {
+
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => {
+                
+                return res.json();
+
+            }).then((res) => {
+                console.log(res);
+                
+            }).catch((error) => {
+                console.log(error);
+            });
+
 
     }
 </script>
